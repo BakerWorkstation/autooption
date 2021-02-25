@@ -1,0 +1,2 @@
+{charset: utf8, database: zabbix, host: 172.17.78.91, password: zabbix, port: 3306,
+  user: zabbix}

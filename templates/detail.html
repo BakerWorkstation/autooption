@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>巡检报告</title>
+    <link rel="stylesheet" href="/static/menu/css/bootstrap-combined.min.css">
+    <link rel="stylesheet" href="/static/menu/css/bootstrap.min.css">
+<style>
+ body {
+        padding-top: 20px;
+        padding-left: 150px;
+        padding-right: 150px;
+}
+</style>
+</head>
+<body>
+    <script src="/static/menu/js/jquery-3.2.0.js"></script>
+    <script src="/static/menu/js/bootstrap.min.js"></script>
+    <script src="/static/menu/js/echarts-all.js"></script>
+<h4 class="text-warning text-center" style="font-size:28px">巡检报告</h4></p>
+<p align="right" style="font-size:16px; padding-right:20px">报告生成时间 {{stoptime}}</p>
+</br>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<h4 class="text-warning text-left">
+				1 综述
+			</h4></br>
+			<h5 style="padding:20px;border-color: #ddd;border-style: solid; border-width: 1px" class="text-left">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本次巡检任务已执行完毕，共巡检主机 {{hostCount}}台，巡检过程中发现灾难事件（高）{{disT}}件、严重及警告事件（中）{{warnT}}件、低级事件（低）{{commonT}}件、信息性事件{{infoT}}件。</p>
+			</h5>
+		</div>
+	</div>
+</div>
+
+</br>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<h4 class="text-warning text-left">
+				巡检信息
+			</h4>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<table class="table table-hover table-bordered table-condensed">
+				<tbody>
+					<tr class="info">
+						<td>
+							巡检名称
+						</td>
+						<td>
+							{{type}} {{date}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							任务类型
+						</td>
+						<td>
+							{{type}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							存活主机
+						</td>
+						<td>
+							{{alivehost}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							成功巡检主机
+						</td>
+						<td>
+							{{alivehost}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							失败巡检主机
+						</td>
+						<td>
+							{{failhost}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							开始时间
+						</td>
+						<td>
+							{{starttime}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							结束时间
+						</td>
+						<td>
+							{{stoptime}}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<h4 class="text-warning text-left">
+				巡检结果示意
+			</h4>
+			<h5 class="text-warning text-left">
+				巡检结果分布
+			</h5>
+		</div>
+	</div>
+</div>
+
+<div id="photo" style="height:300px;width: 900px"></div></br>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<h4 class="text-warning text-left">
+				2 巡检内容
+			</h4></br>
+			<h5 class="text-warning text-left">
+				巡检异常列表
+			</h5>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<table class="table table-bordered table-hover" id="table">
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<h4 class="text-warning text-left">
+				3 参考标准
+			</h4></br>
+			<h5 class="text-warning text-left">
+				巡检结果危险等级评定标准
+			</h5>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<table class="table table-hover table-bordered table-condensed">
+				<thead>
+					<tr class="info">
+						<th>
+							危险程度
+						</th>
+						<th>
+							严重程序说明
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							高
+						</td>
+						<td>
+							高危。。。
+						</td>
+					</tr>
+					<tr>
+						<td>
+							中
+						</td>
+						<td>
+							中危。。。
+						</td>
+					</tr>
+					<tr>
+						<td>
+							低
+						</td>
+						<td>
+							低危。。。
+						</td>
+					</tr>
+					<tr>
+						<td>
+							信息性
+						</td>
+						<td>
+							信息性
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<h5 class="text-warning text-left">
+				建议
+			</h5>
+			<h5 class="text-left">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本次巡检任务已执行完毕，共巡检主机XX台，巡检过程中发现灾难事件（高）XX件、严重及警告事件（中）XX件、低级事件（低）XX件、信息性事件XX件。</p>
+			</h5></br></br>
+		</div>
+	</div>
+</div>
+
+</body>
+<script>
+function show(count){
+    var a = document.getElementById('show' + count)
+    var b = a.style.display;
+    var c = document.getElementById('ip' + count);
+    if(b == "none"){
+        a.style.display = "";
+        c.src = "/static/menu/images/minus.gif";
+    }
+    else if(b == ""){
+        a.style.display = "none";
+        c.src = "/static/menu/images/plus.gif";
+    }
+}
+
+window.onload=getData();
+function getData(){
+    photo();
+    report();
+}
+
+function report(flag){
+    var strSum = '<thead>' +
+               '<tr>' +
+                    '<th>' +
+                        'IP地址' +
+                    '</th>' +
+                    '<th>' +
+                        '主机名'+
+                    '</th>' +
+                    '<th>' +
+                        '操作系统' +
+                    '</th>' +
+                    '<th>' +
+                        '灾难事件' +
+                    '</th>' +
+                    '<th>' +
+                        '严重及警告事件' +
+                    '</th>' +
+                    '<th>' +
+                        '一般事件' +
+                    '</th>' +
+                '</tr>' +
+            '</thead>' +
+            '<tbody>';
+    var str2 = "{{data}}";
+    str1 = str2.replace(/&quot;/g , '"');
+    var obj = eval('(' + str1 + ')');
+    var a = obj["info"];
+    var ele = document.getElementById("table");
+    for(var i=0;i<a.length; i++)
+    {
+        var list = a[i];
+        strSum += '<tr class="danger"  onclick="show(' + (i+1) +')">' +
+                       '<td>' + 
+                           list["ip"] + 
+                       '</td>' +
+                       '<td>' +
+                           '<img id="ip' +
+                                 (i+1) + 
+                                 '"' + ' src="/static/menu/images/plus.gif">' +
+                                 list["hostname"] +
+                       '</td>' +
+                       '<td>' +
+                           list["system"]  + 
+                       '</td>' +
+                       '<td>' +
+                           list["dis"] + 
+                       '</td>' +
+                       '<td>' +
+                           list["warning"] +
+                       '</td>' +
+                       '<td>' +
+                           list["common"] +
+    	               '</td>' +
+                   '</tr>' +
+                   '<tr style="display: none" id="show'+ (i+1) + '">' + 
+                       '<td width="19.7%"></td>' + 
+    '<td style="padding-left:20px"  class="expand" colspan="5">' +
+    '<table style="white-space:pre-wrap;" class="table table-bordered" width="100%">' + 
+        '<tr>' +
+             '<th width="20%">主机IP</th>' +
+             '<td width="80%">' + list["ip"] + ';&nbsp</td>' +
+        '</tr>' +
+        '<tr>' +
+             '<th width="20%">主机所属</th>' +
+             '<td width="80%">' + list["groupname"] + ';&nbsp</td>' +
+        '</tr>' +
+        '<tr>' +
+             '<th width="20%">部署应用</th>' +
+             '<td width="80%">' +  ';&nbsp</td>' +
+        '</tr>' +
+        '<tr>' +
+             '<th width="20%">告警内容</th>' +
+             '<td width="80%">' + list["discript"].replace(/_/g, '</br>')  + '</td>' +
+        '</tr>' +
+        '<tr>' +
+             '<th width="20%">告警处理建议</th>' +
+             '<td width="80%">'  + ';&nbsp</td>' +
+        '</tr>' +
+    '</table>' +
+    '</td>' +
+    '</tr>';
+    }
+    strSum += '<tbody>';
+    ele.innerHTML = strSum;
+}
+
+function photo(){
+    var myChart = echarts.init(document.getElementById("photo"));
+    var option = {
+    title : {
+        text: '合计 4个主机',
+        x:'right',
+        y: 'top',
+	fontSize: 12,
+	padding: 85,
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient : 'vertical',
+        x : 'right',
+        y : 'bottom',
+	padding: 45,
+        data:['高', '中', '低', '信息性']
+    },
+    toolbox: {
+        show : false,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {
+                show: true, 
+                type: ['pie', 'funnel'],
+                option: {
+                    funnel: {
+                        x: '25%',
+                        width: '50%',
+                        funnelAlign: 'left',
+                        max: 1548
+                    }
+                }
+            },
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    series : [
+        {
+            name:'巡检结果分布',
+            type:'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:[
+                {value:1, name:'高'},
+                {value:1, name:'中'},
+                {value:1, name:'低'},
+                {value:1, name:'信息性'}
+            ]
+        }
+    ]
+    };
+
+    // 为echarts对象加载数据
+    myChart.setOption(option);
+}
+</script>
+</html>

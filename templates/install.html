@@ -1,0 +1,830 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+        <link rel="stylesheet" href="/static/menu/css/bootstrap-combined.min.css">
+        <link rel="stylesheet" href="/static/menu/css/bootstrap.min.css"> 
+        <link rel="stylesheet" href='/static/menu/css/buttons.css'>
+        <script src="/static/menu/js/jquery-3.2.0.js"></script>
+        <script src="/static/menu/js/bootstrap.min.js"></script>
+<style>
+ body {
+        padding-left: 30px;
+        padding-right: 30px;
+}
+</style>
+</head>
+<body>
+<div class="col-xs-12"  >
+  <h3 style="color:#478fca;border-bottom: 1px solid #478fca; padding-bottom:10px;font-size:21px">自动化部署安装</h3>
+
+  <div style="background-color:#307ecc; color: #fff;font-size: 14px;margin-bottom: 1px;padding-left:12px;line-height: 38px">
+
+                                自动部署配置列表
+
+  </div>
+  <form class="form-signin" role="form" action="javascript:deployaction()" method="POST">
+  <div class="table-responsive">
+    <table id="sample-table-2" class="table table-hover table-bordered">
+      <thead>
+        <tr>
+        <th class="center">
+          <label>
+            <input type="checkbox" class="ace" id='chkall' />
+            <span class="lbl"></span>
+          </label>
+        </th>
+        <th>名称</th>
+        <th>
+          <span class="glyphicon glyphicon-time"></span>
+                        创建时间
+        </th>
+        <th class="hidden-480">状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+        <td class="center">
+          <label>
+            <input type="checkbox" class="ace" id='op_weblogic' name='op_weblogic' />
+            <span class="lbl"></span>
+          </label>
+        </td>
+        <td>
+          <a href="#">weblogic</a>
+        </td>
+        <td>{{ wl_datetime }}</td>
+        <td>{{ wl_status }}</td>
+        </tr>
+        <tr>
+        <td class="center">
+          <label>
+            <input type="checkbox" class="ace" id='op_openfire' name='op_openfire' />
+              <span class="lbl"></span>
+          </label>
+        </td>
+        <td>
+          <a href="#">openfire</a>
+        </td>
+        <td>{{ op_datetime }}</td>
+        <td>{{ op_status }}</td>
+        </tr>
+        <tr>
+        <td class="center">
+          <label>
+            <input type="checkbox" class="ace" id='op_oracle' name='op_oracle' />
+            <span class="lbl"></span>
+          </label>
+        </td>
+        <td>
+          <a href="#">oracle</a>
+        </td>
+        <td>{{ or_datetime }}</td>
+        <td>{{ or_status }}</td>
+        </tr>
+        <tr>
+        <td class="center">
+          <label>
+            <input type="checkbox" class="ace" id='op_mysql' name='op_mysql' />
+            <span class="lbl"></span>
+          </label>
+        </td>
+        <td>
+          <a href="#">mysql</a>
+        </td>
+        <td>{{ my_datetime }}</td>
+        <td>{{ my_status }}</td>
+        </tr>
+        <tr>
+        <td class="center">
+          <label>
+            <input type="checkbox" class="ace" id='op_fastdfs' name='op_fastdfs' />
+            <span class="lbl"></span>
+          </label>
+        </td>
+        <td>
+          <a href="#">fastdfs</a>
+        </td>
+        <td>{{ fd_datetime }}</td>
+        <td>{{ fd_status }}</td>
+      </tbody>
+    </table>
+  </div>
+  <button type="button" class="btn btn-default"  id="ensure1" onclick="start_a()"  disabled="disabled">开始安装</button></br></br>
+  </form>
+  </div>
+</div>
+
+<div class="col-xs-12"  >
+  <h3 style="color:#478fca;border-bottom: 1px solid #cce2c1;padding-bottom:10px;font-size:21px;color:#69aa46">自动化部署安装进度</h3>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span5">
+                <div class="progress progress-striped active" style="width:400px;height:30px;left:20px;border-radius:30px">
+                <div id='div1' class="progress-bar" style="width:0px;">
+                <b><span style="font-family: SimHei" id="total1"></span></b>
+                </div></div>
+                <div style="margin-left:50px">
+                </div>
+
+                <div class="progress progress-striped active" style="width:400px;height:30px;left:20px;border-radius:30px">
+                <div id='div2' class="progress-bar" style="width:0px;">
+                <b><span style="font-family: SimHei" id="total2"></span></b>
+                </div></div>
+
+                <div class="progress progress-striped active" style="width:400px;height:30px;left:20px;border-radius:30px">
+                <div id='div3' class="progress-bar" style="width:0px;">
+                <b><span style="font-family: SimHei" id="total3"></span></b>
+                </div></div>
+
+                <div class="progress progress-striped active" style="width:400px;height:30px;left:20px;border-radius:30px">
+                <div id='div4' class="progress-bar" style="width:0px;">
+                <b><span style="font-family: SimHei" id="total4"></span></b>
+                </div></div>
+
+                <div class="progress progress-striped active" style="width:400px;height:30px;left:20px;border-radius:30px">
+                <div id='div5' class="progress-bar" style="width:0px;">
+                <b><span style="font-family: SimHei" id="total5"></span></b>
+                </div></div>
+      </div>
+
+      <div class="span2">
+           <div  style="width:300px;margin-top:-5px;height:50px" id="new0"></div>
+           <div  style="width:300px" id="new1"></div>
+      </div>
+      <div class="span1">
+      </div>
+      <div class="span2">
+           <div  style="width:300px;margin-top:45px" id="new2"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+<script>
+
+// chkAll全选事件
+$("#chkall").bind("click",function () {
+    var op0=document.getElementById('chkall');
+    var op1=document.getElementById('op_weblogic');
+    var op2=document.getElementById('op_openfire');
+    var op3=document.getElementById('op_oracle');
+    var op4=document.getElementById('op_mysql');
+    var op5=document.getElementById('op_fastdfs');
+    
+    if(this.checked){
+        $("#ensure1").attr("disabled", false);
+        document.getElementById('ensure1').className="btn btn-primary";
+        //$("#ensure2").attr("disabled", false);
+        //document.getElementById('ensure2').className="btn btn-primary";
+        if(!op1.disabled){
+            $("#op_weblogic").prop("checked", true);
+        }
+        if(!op2.disabled){
+            $("#op_openfire").prop("checked", true);
+        }
+        if(!op3.disabled){
+            $("#op_oracle").prop("checked", true);
+        }
+        if(!op4.disabled){
+            $("#op_mysql").prop("checked", true);
+        }
+        if(!op5.disabled){
+            $("#op_fastdfs").prop("checked", true);
+        }
+    }else{
+        $("#op_weblogic").prop("checked", false);
+        $("#op_openfire").prop("checked", false);
+        $("#op_oracle").prop("checked", false);
+        $("#op_mysql").prop("checked", false);
+        $("#op_fastdfs").prop("checked", false);
+    }
+});
+
+
+// 禁止提交按钮
+$("input:checkbox").bind("click",function(){
+    var op1=document.getElementById('op_weblogic');
+    var op2=document.getElementById('op_openfire');
+    var op3=document.getElementById('op_oracle');
+    var op4=document.getElementById('op_mysql');
+    var op5=document.getElementById('op_fastdfs');
+
+    if(!op1.checked&&!op2.checked&&!op3.checked&&!op4.checked&&!op5.checked){
+        $("#ensure1").attr("disabled", true);
+        document.getElementById('ensure1').className="btn btn-default";
+    }
+    else{
+        $("#ensure1").attr("disabled", false);
+        document.getElementById('ensure1').className="btn btn-primary";
+    }
+    //$("#ensure2").attr("disabled", false);
+    //document.getElementById('ensure2').className="btn btn-primary";
+});
+
+/*load old data */
+
+function MyAutoRun(){
+
+    var status1 = "{{wl_status}}";
+    var status2 = "{{op_status}}";
+    var status3 = "{{or_status}}";
+    var status4 = "{{my_status}}";
+    var status5 = "{{fd_status}}";
+
+    if(status1=="未配置"){
+        $("#op_weblogic").prop("disabled", true);
+    }
+
+    if(status2=="未配置"){
+        $("#op_openfire").prop("disabled", true);
+    }
+
+    if(status3=="未配置"){
+        $("#op_oracle").prop("disabled", true);
+    }
+    
+    if(status4=="未配置"){
+        $("#op_mysql").prop("disabled", true);
+    }
+
+    if(status5=="未配置"){
+        $("#op_fastdfs").prop("disabled", true);
+    }
+
+    if(status1=="未配置"&&status2=="未配置"&&status3=="未配置"&&status4=="未配置"&&status5=="未配置"){
+        $("#chkall").prop("disabled", true);
+    }
+
+}
+
+window.onload=MyAutoRun();
+
+function deployaction() {
+
+    // $("#ensure1").attr("disabled", true);
+    /*
+
+    var wl_nodenum=document.getElementById('wlid_1').value;
+
+
+
+    var str = "/wl_setconf/?wl_nodenum="+wl_nodenum+'&wl_usertype='+wl_usertype+'&wl_domainname='+wl_domainname+'&wl_listenport='+wl_listenport+'&wl_clustername='+wl_clustername+'&wl_username='+wl_username+'&wl_password='+wl_password+'&wl_httpport='+wl_httpport+'&wl_namelist='+wl_namelist+'&wl_iplist='+wl_iplist+'&wl_iplist='+wl_iplist+'&wl_adminserver='+wl_adminserver+'&wl_hostusername='+wl_hostusername+'&wl_hostpassword='+wl_hostpassword;
+
+
+
+    var req = new XMLHttpRequest();
+
+    req.open("GET", str);
+
+    req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+
+    req.onreadystatechange = function() {
+
+        if(req.readyState == 4 && req.status == 200) {
+
+            res = eval('[' + req.responseText + ']')[0];
+
+            alert(res);
+
+            //location.reload();
+
+        }
+
+    }
+
+    req.send(null);
+
+    */
+
+}
+
+
+
+</script>
+
+<script type="text/javascript">
+
+
+
+            var str = "";
+
+            for(var i = 0; i < 5; i++){
+                          str += "&nbsp;";
+            }
+
+            var timer1 = null;
+            var width1 = 0;
+            function onChange1() {
+
+                if(width1 == 397) {
+                    window.clearTimeout(timer1);
+                }else{
+
+                    width1 += 1;
+
+                    var total1 = document.getElementById("total1");
+
+                    document.getElementById("div1").style.width = width1 + "px";
+
+                    total1.style.fontSize = "16px";
+                    total1.style.lineHeight = "30px";
+                    total1.style.color = "red";
+                    total1.innerHTML = "weblogic"  + str + parseInt(width1/4) + "%";
+
+                    timer1 = window.setTimeout("onChange1()", 380);
+                }
+            }
+
+            var timer2 = null;
+            var width2 = 0;
+            function onChange2() {
+                if(width2 == 397) {
+                    window.clearTimeout(timer2);
+                }else {
+                    width2 += 1;
+
+                    var total2 = document.getElementById("total2");
+
+                    document.getElementById("div2").style.width = width2 + "px";
+
+                    total2.style.fontSize = "16px";
+                    total2.style.lineHeight = "30px";
+                    total2.style.color = "red";
+                    total2.innerHTML = "openfire"  + str + parseInt(width2/4) + "%";
+
+                    //timer2 = window.setTimeout("onChange2()", 413);
+                    timer2 = window.setTimeout("onChange2()", 4);
+                }
+
+            }
+
+            var timer3 = null;
+            var width3 = 0;
+            function onChange3() {
+
+                if(width3 == 397) {
+                    window.clearTimeout(timer3);
+                }else {
+                    width3 += 1;
+
+                    var total3 = document.getElementById("total3");
+
+                    document.getElementById("div3").style.width = width3 + "px";
+
+                    total3.style.fontSize = "16px";
+                    total3.style.lineHeight = "30px";
+                    total3.style.color = "red";
+                    total3.innerHTML = "oracle" + "&nbsp;&nbsp;" + str + parseInt(width3/4) + "%";
+
+                    timer3 = window.setTimeout("onChange3()", 2078);
+                }
+
+            }
+            
+            var timer4 = null;
+            var width4 = 0;
+            function onChange4() {
+
+                if(width4 == 397) {
+                    window.clearTimeout(timer4);
+                }else {
+                    width4 += 1;
+
+                    var total4 = document.getElementById("total4");
+
+                    document.getElementById("div4").style.width = width4 + "px";
+
+                    total4.style.fontSize = "16px";
+                    total4.style.lineHeight = "30px";
+                    total4.style.color = "red";
+                    total4.innerHTML = "mysql" + "&nbsp;&nbsp;" + str + parseInt(width4/4) + "%";
+
+                    timer4 = window.setTimeout("onChange4()", 50);
+                }
+
+            }
+
+
+            var timer5 = null;
+            var width5 = 0;
+            function onChange5() {
+
+                if(width5 == 397) {
+                    window.clearTimeout(timer5);
+                }else {
+                    width5 += 1;
+
+                    var total5 = document.getElementById("total5");
+
+                    document.getElementById("div5").style.width = width5 + "px";
+
+                    total5.style.fontSize = "16px";
+                    total5.style.lineHeight = "30px";
+                    total5.style.color = "red";
+                    total5.innerHTML = "fastdfs" + "&nbsp;&nbsp;" + str + parseInt(width5/4) + "%";
+
+                    timer5 = window.setTimeout("onChange5()", 260);
+                }
+
+            }
+
+       /*
+
+            var timer4 = null;
+
+            var width4 = 0;
+
+            function onChange4(){
+
+                alert('start');
+
+                if(width4 == 397) {
+
+                    window.clearTimeout(timer4);
+
+                }else {
+
+                    width4 += 1;
+
+                    document.getElementById("div4").style.width = width4 + "%";
+
+                    document.getElementById("state4").data-percent = width4 + '%';
+
+                    timer4 = window.setTimeout("onChange4()",400);
+
+                }
+
+            }
+
+       */
+
+         /*       window.onload = function(){
+
+        onChange1();
+
+        onChange2();
+
+        onChange3();
+
+    }*/
+
+        function start_a(){
+                    $("#op_weblogic").prop("disabled", true);
+                    $("#op_openfire").prop("disabled", true);
+                    $("#op_oracle").prop("disabled", true);
+                    $("#op_mysql").prop("disabled", true);
+                    $("#op_fastdfs").prop("disabled", true);
+                    $("#chkall").prop("disabled", true);
+        
+                    document.getElementById("ensure1").disabled="disabled";
+                    document.getElementById('ensure1').className="btn btn-default";
+                    
+                    //$("#ensure2").attr("disabled", false);
+                    //document.getElementById('ensure2').className="btn btn-primary";
+
+                    var wl_signal = false;
+                    var op_signal = false;
+                    var ol_signal = false;
+                    var my_signal = false;
+                    var fd_signal = false;
+
+                    var op1=document.getElementById('op_weblogic');
+                    var op2=document.getElementById('op_openfire');
+                    var op3=document.getElementById('op_oracle');
+                    var op4=document.getElementById('op_mysql');
+                    var op5=document.getElementById('op_fastdfs');
+
+
+                    if(op1.checked){
+                        wl_signal = true;
+                        onChange1();
+                    }
+                    if(op2.checked){
+                        op_signal = true;
+                        onChange2();
+                    }
+                    if(op3.checked){
+                        ol_signal = true;
+                        onChange3();
+                    }
+                    if(op4.checked){
+                        my_signal = true;
+                        onChange4();
+                    }
+                    if(op5.checked){
+                        fd_signal = true;
+                        onChange5();
+                    }
+
+
+
+                    var str1 = "/op_install/?wl_signal="+wl_signal+'&op_signal='+op_signal+'&ol_signal='+ol_signal+'&my_signal='+my_signal+'&fd_signal='+fd_signal;
+
+                    //var str1 = "/op_install/";
+
+                    var req = new XMLHttpRequest();
+
+                    req.open("GET", str1);
+
+                    req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+
+                    req.onreadystatechange = function() {
+
+                    if(req.readyState == 4 && req.status == 200) {
+
+                        res = eval('[' + req.responseText + ']')[0];
+
+                        }
+
+                    }
+
+                    req.send(null);
+
+                    window.setTimeout("refresh()",6000);
+
+        }
+
+  
+
+        var id;
+        var wl_finish = false;
+        var op_finish = false;
+        var ol_finish = false;
+        var my_finish = false;
+        var fd_finish = false;
+
+        function refresh()
+
+        {
+
+
+
+            var str1 = "/refresh_install";
+
+            var req = new XMLHttpRequest();
+
+            req.open("GET", str1);
+
+            req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+
+            req.onreadystatechange = function()
+
+            {
+
+                if(req.readyState == 4 && req.status == 200) 
+
+                {
+
+                    res = eval('[' + req.responseText + ']')[0];
+
+                    var wl_flag = true;
+                    var op_flag = true;
+                    var ol_flag = true;
+                    var my_flag = true;
+                    var fd_flag = true;
+
+                    var op1 = document.getElementById('op_weblogic');
+                    var op2 = document.getElementById('op_openfire');
+                    var op3 = document.getElementById('op_oracle');
+                    var op4 = document.getElementById('op_mysql');
+                    var op5 = document.getElementById('op_fastdfs');
+
+                    if(op1.checked){
+                        wl_flag = false;
+                    }
+                    if(op2.checked){
+                        op_flag = false;
+                    }
+                    if(op3.checked){
+                        ol_flag = false;
+                    }
+                    if(op4.checked){
+                        my_flag = false;
+                    }
+                    if(op5.checked){
+                        fd_flag = false;
+                    }
+
+                    if(res[0] == "1")
+                    {
+                        if(!wl_finish)
+                      {
+                        document.getElementById("div1").style.width = 400 + "px";
+
+                        var total1 = document.getElementById("total1");
+
+                        total1.style.fontSize = "16px";
+                        total1.style.lineHeight = "30px";
+                        total1.style.color = "yellow";
+                        total1.innerHTML = "weblogic"  + str + 100 + "%";
+
+                        var newDiv = document.getElementById("new0");
+                        var e = document.createElement("a");
+                        e.href="http://{{wl_adminserverip}}:{{wl_httpport}}/console";
+                        e.style.fontSize = 18 + 'px';
+                        e.className = "button button-glow button-border button-rounded button-primary";
+                        e.innerText="{{wl_adminserverip}}";
+                        e.target = "_blank";
+                        newDiv.appendChild(e);
+
+                        wl_flag = true;
+                        window.clearTimeout(timer1);
+                        wl_finish = true;
+                      }
+                    }else if(res[0] == "2")
+                    {
+                        document.getElementById("div1").style.width = 400 + "px";
+
+                        var total1 = document.getElementById("total1");
+
+                        total1.style.fontSize = "16px";
+                        total1.style.lineHeight = "30px";
+                        total1.style.color = "yellow";
+                        total1.innerHTML = "weblogic"  + str + "安装失败";
+
+                        wl_flag = true;
+                        window.clearTimeout(timer1);
+                    }
+
+
+
+                    if(res[1] == "1")
+                    {
+                        if(!op_finish)
+                      {
+                        document.getElementById("div2").style.width = 400 + "px";
+
+                        var total2 = document.getElementById("total2");
+
+                        total2.style.fontSize = "16px";
+                        total2.style.lineHeight = "30px";
+                        total2.style.color = "yellow";
+                        total2.innerHTML = "openfire"  + str + 100 + "%";
+
+                        var newDiv = document.getElementById("new1");
+                        var e = document.createElement("a");
+                        e.href="http://{{op_first}}:{{op_webport}}";
+                        e.style.fontSize = 18 + 'px';
+                        e.className = "button button-glow button-border button-rounded button-primary";
+                        e.innerText="{{op_first}}";
+                        e.target = "_blank";
+                        newDiv.appendChild(e);
+                       if ("{{op_two}}" != "false"){
+                        var newDiv = document.getElementById("new2");
+                        var e = document.createElement("a");
+                        e.href="http://{{op_two}}:{{op_webport}}";
+                        e.className = "button button-glow button-border button-rounded button-primary";
+                        e.style.fontSize = 18 + 'px';
+                        e.innerText="{{op_two}}";
+                        e.target = "_blank";
+                        newDiv.appendChild(e);
+                        }
+                        op_flag = true;
+                        window.clearTimeout(timer2);
+                        op_finish = true;
+                      }
+                    }else if(res[1] == '2')
+                    {
+                        document.getElementById("div2").style.width = 400 + "px";
+
+                        var total2 = document.getElementById("total2");
+
+                        total2.style.fontSize = "16px";
+                        total2.style.lineHeight = "30px";
+                        total2.style.color = "yellow";
+                        total2.innerHTML = "openfire" + str + "安装失败";
+
+                        op_flag = true;
+                        window.clearTimeout(timer2);
+
+                    }
+
+
+
+                    if(res[2] == "1")
+                    {
+                        if(!ol_finish)
+                      {
+                        document.getElementById("div3").style.width = 400 + "px";
+
+                        var total3 = document.getElementById("total3");
+
+                        total3.style.fontSize = "16px";
+                        total3.style.lineHeight = "30px";
+                        total3.style.color = "yellow";
+                        total3.innerHTML = "oracle" + "&nbsp;&nbsp;" + str + 100 + "%";
+
+                        ol_flag = true;
+                        window.clearTimeout(timer3);
+                        ol_finish = true;
+                      }
+
+                    }else if(res[2] == '2')
+                    {
+                        document.getElementById("div3").style.width = 400 + "px";
+
+                        var total3 = document.getElementById("total3");
+
+                        total3.style.fontSize = "16px";
+                        total3.style.lineHeight = "30px";
+                        total3.style.color = "yellow";
+                        total3.innerHTML = "oracle" + "&nbsp;&nbsp;" + str + "安装失败";
+
+                        ol_flag = true;
+                        window.clearTimeout(timer3);
+
+                    }
+                    
+                    
+                    
+                    if(res[3] == "1")
+                    {
+                        if(!my_finish)
+                      {
+                        document.getElementById("div4").style.width = 400 + "px";
+
+                        var total4 = document.getElementById("total4");
+
+                        total4.style.fontSize = "16px";
+                        total4.style.lineHeight = "30px";
+                        total4.style.color = "yellow";
+                        total4.innerHTML = "mysql" + "&nbsp;&nbsp;" + str + 100 + "%";
+
+                        my_flag = true;
+                        window.clearTimeout(timer4);
+                        my_finish = true;
+                      }
+
+                    }else if(res[3] == '2')
+                    {
+                        document.getElementById("div4").style.width = 400 + "px";
+
+                        var total4 = document.getElementById("total4");
+
+                        total4.style.fontSize = "16px";
+                        total4.style.lineHeight = "30px";
+                        total4.style.color = "yellow";
+                        total4.innerHTML = "mysql" + "&nbsp;&nbsp;" + str + "安装失败";
+
+                        my_flag = true;
+                        window.clearTimeout(timer4);
+
+                    }
+
+                    
+                    if(res[4] == "1")
+                    {
+                        if(!fd_finish)
+                      {
+                        document.getElementById("div5").style.width = 400 + "px";
+
+                        var total4 = document.getElementById("total5");
+
+                        total4.style.fontSize = "16px";
+                        total4.style.lineHeight = "30px";
+                        total4.style.color = "yellow";
+                        total4.innerHTML = "fastdfs" + "&nbsp;&nbsp;" + str + 100 + "%";
+
+                        fd_flag = true;
+                        window.clearTimeout(timer5);
+                        fd_finish = true;
+                      }
+
+                    }else if(res[4] == '2')
+                    {
+                        document.getElementById("div5").style.width = 400 + "px";
+
+                        var total4 = document.getElementById("total5");
+
+                        total5.style.fontSize = "16px";
+                        total5.style.lineHeight = "30px";
+                        total5.style.color = "yellow";
+                        total5.innerHTML = "fastdfs" + "&nbsp;&nbsp;" + str + "安装失败";
+
+                        fd_flag = true;
+                        window.clearTimeout(timer5);
+
+                    }
+
+                }
+
+            if(wl_flag && op_flag && ol_flag && my_flag && fd_flag)
+            {
+                window.clearTimeout(id);
+            }
+
+            }
+
+            req.send(null);
+
+            id = window.setTimeout("refresh()", 5000);
+
+        }
+
+        </script>
+</html>
+
+
+

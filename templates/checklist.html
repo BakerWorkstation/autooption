@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>巡检列表</title>
+<!-- Latest compiled and minified CSS -->
+
+
+    <!--<link rel="stylesheet" href="/static/menu/css/bootstrap-combined.min.css">-->
+    <link rel="stylesheet" href="/static/menu/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/menu/css/bootstrap-table.min.css">
+    <link rel="stylesheet" href='/static/menu/css/buttons.css'>
+    <link rel="stylesheet" href='/static/menu/css/bootstrap-clockpicker.min.css'>
+
+<style>
+ body {
+        padding-top: 20px;
+        padding-left: 100px;
+        padding-right: 100px;
+}
+</style>
+</head>
+
+<body>
+<script src="/static/menu/js/jquery-3.2.0.js"></script>
+<script src="/static/menu/js/bootstrap.min.js"></script>
+<script src="/static/menu/js/bootstrap-table.min.js"></script>
+<script src="/static/menu/js/tableExport.js"></script>
+<script src="/static/menu/js/bootstrap-table-export.js"></script>
+<script src="/static/menu/js/bootstrap-table-zh-CN.js"></script>
+<script src="/static/menu/js/bootstrap-clockpicker.min.js"></script>
+
+<div style="padding-left:20px; width:200px; float: left">
+			 <a href="/patchReport" class="button button-3d button-primary button-pill" type="button">手动巡检</a>
+</div>
+<div style="width:200px; float: left">
+			 <a id="check-minutes" class="button button-3d button-primary button-pill" type="button" data-toggle="modal" data-target="#myModal">自动巡检</a>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">自动巡检时间设定</h4>
+      </div>
+      <div class="modal-body">
+          <div class="input-group clockpicker"  data-autoclose="true" style="width: 400px; padding-left:200px">
+          <input type="text" class="form-control" value={{timestamp}} id="timestamp">
+          <span class="input-group-addon">
+              <span class="glyphicon glyphicon-time"></span>
+          </span>
+          </div>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" onclick="crond()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="col-xs-12">
+<table id="table"></table>
+</div>
+</body>
+<script>
+$('#table').bootstrapTable({
+    url: '/checklistdata',
+    method: 'get',
+    queryParamsType: '',
+    //toolbar: '#toolbar',
+    dataType: "json",
+    dataField: "rows",
+    cache: false,
+    showColumns: true,
+    pagination: true, //分页
+    pageNumber: 1,
+    pageList: [5, 10, 20, 50],
+    pageSize: 5,
+    singleSelect: false,
+    showToggle: true,
+    showRefresh: true,
+    showExport: true,
+    exportDataType: "basic",
+    showPaginationSwitch: true,
+    striped: true,
+    clickToSelect: true,
+    smartDisplay: true,
+    locale:"zh-US" , //表格汉化
+    search: true, //显示搜索框
+    //sidePagination: "server", //服务端处理分页
+    rowStyle: function (row, index) {
+                //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
+                var strclass = "";
+                if (row.status == "正常") {
+                    strclass = 'success';//还有一个active
+                }
+                else if (row.status == "异常") {
+                    strclass = 'danger';
+                }
+                else {
+                    return {};
+                }
+                return { classes: strclass }
+                },
+    columns: [{
+        field: 'id',
+        title: 'ID',
+        sortable:true,
+        valign: 'middle',
+        align: 'center'
+    }, {
+        field: 'name',
+        title: '报告名称',
+        sortable:true,
+        valign: 'middle',
+        align: 'center',
+        formatter: 'infoFormatterName'
+    }, {
+        field: 'status',
+        title: '巡检结果',
+        sortable:true,
+        valign: 'middle',
+        align: 'center'
+    }, {
+        filed: 'manul1',
+        title: '报告',
+        valign: 'middle',
+        align: 'center',
+        formatter: 'infoFormatterManul1'
+    }, {
+        filed: 'manul2',
+        title: '表格',
+        valign: 'middle',
+        align: 'center',
+        formatter: 'infoFormatterManul2'
+
+    }]
+
+});
+function infoFormatterName(value, row, index) {
+return '<a href=/detail/?id=' + row.name.replace(" ", "%20") + ' target="_blank">' + row.name + '</a>';
+}
+function infoFormatterManul1(value, row, index) {
+return '<a href=/downReport/?id=' + row.name.replace(" ", "%20") + ' target="_blank">下载报告</a>';
+}
+function infoFormatterManul2(value, row, index) {
+return '<a href=/downExcel/?id=' + row.name.replace(" ", "%20") + ' target="_blank">下载表格</a>';
+}
+$('.clockpicker').clockpicker({
+      placement: 'bellow',
+      align: 'right'
+});
+flag = false;
+function crond(){
+    var a = document.getElementById("timestamp").value;
+    str1 = "/autocheck/?timestamp=" + a;
+    var req = new XMLHttpRequest();
+    req.open("GET", str1);
+    req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+    req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200) {
+            //res = eval('[' + req.responseText + ']')[0];
+        }
+    }
+    req.send(null);
+    flag = true;
+    $('#myModal').modal('hide');
+}
+$('#myModal').on('hide.bs.modal', function () {
+if(!flag){
+    var a = document.getElementById("timestamp");
+    a.value = "{{timestamp}}";
+}
+})
+</script>
+</html>

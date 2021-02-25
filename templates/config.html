@@ -1,0 +1,882 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+
+        <link rel="stylesheet" href="/static/menu/css/bootstrap-combined.min.css">
+        <link rel="stylesheet" href="/static/menu/css/bootstrap.min.css"> 
+        <script src="/static/menu/js/jquery-3.2.0.js"></script>
+        <script src="/static/menu/js/bootstrap.min.js"></script>
+
+<style>
+ body{
+        padding-left: 30px;
+        padding-right: 30px;
+}
+</style>
+</head>
+
+    <body>
+
+    <div class="span2">
+    </div>
+    <div class="span10">
+
+    
+    <div class="tabbable"> <!-- Only required for left/right tabs -->
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab1" data-toggle="tab" style=" font-size:18px;">自动部署 Weblogic</a></li>
+            <li><a href="#tab2" data-toggle="tab" style=" font-size:18px;">自动部署 Openfire</a></li>
+            <li><a href="#tab3" data-toggle="tab" style=" font-size:18px;">自动部署 Oracle</a></li>
+            <li><a href="#tab4" data-toggle="tab" style=" font-size:18px;">自动部署 MySQL</a></li>
+            <li><a href="#tab5" data-toggle="tab" style=" font-size:18px;">自动部署 FastDFS</a></li>
+        </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane active" id="tab1">
+            <form class="form-signin" role="form" action="javascript:submitweblogic()" method="POST">
+            
+                <br/>
+                <div>
+                    <p class="text-left" style="color:red;font-size:17px;text-indent:370px">  生成weblogic配置文件  </p>
+                </div>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入集群节点个数</span>
+                    <select class="form-control" id="wlid_1" name="wl_nodenum" placeholder="请下拉选择" style="color:blue" onchange="WLgradeChange()">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                <br>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">选择主机用户权限</span>
+                    <select class="form-control" id="wlid_2" name="wl_usertype" placeholder="请下拉选择" style="color:blue" onchange="WLgradeChange()">
+                        <option value="root">root</option>
+                        <option value="weblogic">weblogic</option>
+                    </select>
+                </div>
+                <br>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入weblogic域名</span>
+                    <input type="text" class="form-control" id="wlid_3" name="wl_domainname" placeholder="字母或数字" style="color:blue">
+                </div>
+                <br>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入集群监听端口</span>
+                    <input type="text" class="form-control" id="wlid_4" name="wl_listenport" placeholder="8001~8999" style="color:blue">
+                </div>
+                <br>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入集群名称</span>
+                    <input type="text" class="form-control" id="wlid_5" name="wl_clustername" placeholder="字母或数字" style="color:blue">
+                </div>
+                <br>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入web用户名称</span>
+                    <input type="text" class="form-control" id="wlid_6" name="wl_username" placeholder="字母或数字" style="color:blue">
+                </div>
+                <br>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入web登录密码</span>
+                    <input type="text" class="form-control" id="wlid_7" name="wl_password" placeholder="必须同时包含字母和数字" style="color:blue">
+                </div>
+                <br>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入web访问端口</span>
+                    <input type="text" class="form-control" id="wlid_8" name="wl_httpport" placeholder="7001~7999" style="color:blue">
+                </div>
+                <br>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入内存最大占用百分比</span>
+                    <input type="text" class="form-control" id="wlid_9" name="wl_memsize" placeholder="1~99 推荐25" style="color:blue">
+                </div>
+                <br>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入集群所有节点名称</span>
+                    <input type="text" class="form-control" id="wlid_10" name="wl_namelist" placeholder="以空格为间隔" onkeyup="fillIpSelect()" style="color:blue">
+                </div>
+                <br>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入集群所有节点IP地址</span>
+                    <input type="text" class="form-control" id="wlid_11" name="wl_iplist" placeholder="以空格为间隔" onkeyup="fillIpSelect()" style="color:blue">
+                </div>
+                <br>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">选择AdminServer节点</span>
+                    <select class="form-control" id="wlid_12" name="wl_adminserver" placeholder="请下拉选择" style="color:blue" onchange="WLgradeChange()">
+                    </select>
+                </div>
+                <br>
+                
+                <p class="text-left" style="color:red;font-size:17px;text-indent:370px"> 配置下发集群  </p>
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机用户名</span>
+                    <input type="text" class="form-control" id="wlid_13" name="wl_hostusername" style="color:blue" placeholder="请选择root用户">
+                </div>
+                    <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机密码</span>
+                    <input type="text" class="form-control" id="wlid_14" name="wl_hostpassword" style="color:blue" placeholder="默认不能为空">
+                </div>
+                    <br/>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机端口</span>
+                    <input type="text" class="form-control" id="wlid_15" name="wl_hostsshport" style="color:blue" placeholder="默认不能为空">
+                </div>
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px;text-align:right">
+                    <button type="button" class="btn btn-danger" id="wl_sshtest" onclick="ssh_check('wl')">ssh连接测试</button>
+                </div>
+                <br/>
+                
+                <button type="button" class="btn btn-warning" id="wl_clear" onclick="WLcleardata()">清 空</button>
+                <input type="submit" class="btn btn-primary" id="wl_ensure" disabled="disabled"></input>
+            </form>
+        </div>
+        <div class="tab-pane" id="tab2">
+            <form class="form-signin" role="form" id="form1" name="form1" action="javascript:submitopenfire()" method="post">
+
+                <br/>
+                <div>
+                    <p class="text-left" style="color:red;font-size:17px;text-indent:370px">  生成openfire配置文件  </p>
+                </div>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入数据库类型</span>
+                    <select class="form-control" id="opid_5" name="op_dbtype" style="color:blue" onchange="OPgradeChange()">
+                        <option>oracle</option>
+                        <option>postgresql</option>
+                        <option>mysql</option>
+                    </select>
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入数据库ip地址</span>
+                    <input type="text" id="opid_6" name="op_dbip" class="form-control" style="color:blue"  placeholder="*.*.*.*">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入数据库端口号</span>
+                    <input type="text" id="opid_7" name="op_dbport" class="form-control" style="color:blue" placeholder="1~65535">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入数据库实例名</span>
+                    <input type="text" id="opid_8" name="op_instant" class="form-control" style="color:blue" placeholder="实例名或者数据库名">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入数据库用户名</span>
+                    <input type="text" id="opid_9" name="op_dbusername" class="form-control" style="color:blue" placeholder="默认不能为空">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入数据库密码</span>
+                    <input type="text" id="opid_10" name="op_dbpasswd" class="form-control" style="color:blue" placeholder="默认不能为空">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入Java启动内存百分比</span>
+                    <input type="text" id="opid_11" name="op_memsize" class="form-control" style="color:blue" placeholder="25-75，无需输入百分号">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入web访问端口</span>
+                    <input type="text" id="opid_12" name="op_webport" class="form-control" style="color:blue" placeholder="1-65535">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入集群中所有节点IP地址&nbsp;</span>
+                    <input type="text" id="opid_13" name="op_clusterip" class="form-control" style="color:blue" placeholder="如果不加入集群，此处可不填写">
+                </div>
+                <br/>
+                
+                <p class="text-left" style="color:red;font-size:17px;text-indent:370px"> 配置下发集群  </p>
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入下发节点ip地址</span>
+                    <input type="text" id="opid_1" name="op_hostip" class="form-control" style="color:blue"  placeholder="空格作为分割">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机用户名</span>
+                    <input type="text" id="opid_2"  name="op_hostusername" class="form-control" style="color:blue" placeholder="请选择root用户">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机密码</span>
+                    <input type="text" id="opid_3" name="op_hostpassword" class="form-control" style="color:blue" placeholder="默认不能为空">
+                </div>
+                <br/>
+
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机端口</span>
+                    <input type="text" id="opid_4" name="op_hostport" class="form-control" style="color:blue" placeholder="默认不能为空">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px;text-align:right">
+                    <button type="button" class="btn btn-danger" id="op_sshtest" onclick="ssh_check('op')">ssh连接测试</button>
+                </div>
+                <br/>
+
+                <button type="button" class="btn btn-warning" id="op_clear" onclick="OPcleardata()">清 空</button>
+                <input type="submit" class="btn btn-primary" id="op_ensure" disabled="disabled"></input>
+
+            </form>
+        </div>
+        
+        <div class="tab-pane" id="tab3">
+            <form class="form-signin" role="form" id="form1" name="form1" action="javascript:submitoracle()" method="post">
+
+                <br/>
+                <div>
+                    <p class="text-left" style="color:red;font-size:17px;text-indent:370px">  生成oracle配置文件  </p>
+                </div>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入数据库端口号</span>
+                    <input type="text" id="orid_1" name="or_port" class="form-control" style="color:blue" placeholder="1000~65535">
+                </div>
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入实例名</span>
+                    <input type="text" id="orid_2" name="or_instancename" class="form-control" style="color:blue"  placeholder="可使用字母或数字，首位必须为字母">
+                </div>
+                <br/>
+
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">选择数据库字符集</span>
+                    <select class="form-control" id="orid_3" name="or_charset" style="color:blue" onchange="ORgradeChange()">
+                        <option>AL32UTF8</option>
+                        <option>ZHS16GBK</option>
+                    </select>
+                </div>
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入日志大小(M)</span>
+                    <input type="text" id="orid_4" name="or_logsize" class="form-control" style="color:blue" placeholder="输入正整数">
+                </div>
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入内存最大占用百分比</span>
+                    <input type="text" id="orid_5" name="or_memsize" class="form-control" style="color:blue" placeholder="40至80，推荐配置70">
+                </div>
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入进程数</span>
+                    <input type="text" id="orid_6" name="or_process" class="form-control" style="color:blue" placeholder="150~2000，推荐配置150">
+                </div>
+                <br/>
+
+                <p class="text-left" style="color:red;font-size:17px;text-indent:370px"> 配置下发集群  </p>
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入下发节点ip地址</span>
+                    <input type="text" id="orid_7" name="or_hostip" class="form-control" style="color:blue"  placeholder="空格作为分割">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机用户名</span>
+                    <input type="text" id="orid_8"  name="or_hostusername" class="form-control" style="color:blue" placeholder="请选择root用户">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机密码</span>
+                    <input type="text" id="orid_9" name="or_hostpassword" class="form-control" style="color:blue" placeholder="默认不能为空">
+                </div>                
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机端口</span>
+                    <input type="text" id="orid_10" name="or_hostsshport" class="form-control" style="color:blue" placeholder="0~65535">
+                </div>                
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px;text-align:right">
+                    <button type="button" class="btn btn-danger" id="or_sshtest" onclick="ssh_check('or')">ssh连接测试</button>
+                </div>
+                <br/>
+                
+                <button type="button" class="btn btn-warning" id="or_clear" onclick="ORcleardata()">清 空</button>
+                <input type="submit" class="btn btn-primary" id="or_ensure" disabled="disabled"></input>
+            </form>
+        </div>
+        
+        <div class="tab-pane" id="tab4">
+            <form class="form-signin" role="form" id="form1" name="form1" action="javascript:submitmysql()" method="post">
+
+                <br/>
+                <div>
+                    <p class="text-left" style="color:red;font-size:17px;text-indent:370px">  生成mysql配置文件  </p>
+                </div>
+
+
+                <p class="text-left" style="color:red;font-size:17px;text-indent:370px"> 配置下发集群  </p>
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入下发节点ip地址</span>
+                    <input type="text" id="myid_1" name="my_hostip" class="form-control" style="color:blue"  placeholder="空格作为分割">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机用户名</span>
+                    <input type="text" id="myid_2"  name="my_hostusername" class="form-control" style="color:blue" placeholder="请选择root用户">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机密码</span>
+                    <input type="text" id="myid_3" name="my_hostpassword" class="form-control" style="color:blue" placeholder="默认不能为空">
+                </div>
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机端口</span>
+                    <input type="text" id="myid_4" name="my_hostsshport" class="form-control" style="color:blue" placeholder="0~65535">
+                </div>                
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px;text-align:right">
+                    <button type="button" class="btn btn-danger" id="my_sshtest" onclick="ssh_check('my')">ssh连接测试</button>
+                </div>
+                <br/>
+                
+                <button type="button" class="btn btn-warning" id="my_clear" onclick="mycleardata()">清 空</button>
+                <input type="submit" class="btn btn-primary" id="my_ensure" disabled="disabled"></input>
+            </form>
+        </div>
+        
+        <!-- fastDFS configuration start -->
+        <div class="tab-pane" id="tab5">
+            <form class="form-signin" role="form" id="form5" name="form5" action="javascript:submitfastdfs()" method="post">
+
+                <br/>
+                <div>
+                    <p class="text-left" style="color:red;font-size:17px;text-indent:370px">  生成fastdfs配置文件  </p>
+                </div>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入tracker_server端口</span>
+                    <input type="text" id="fdid_5" name="fd_trackerport" class="form-control" style="color:blue"  placeholder="0~65535">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入storage_server端口</span>
+                    <input type="text" id="fdid_6" name="fd_storageport" class="form-control" style="color:blue"  placeholder="0~65535">
+                </div>
+                <br/>
+
+                <p class="text-left" style="color:red;font-size:17px;text-indent:370px"> 配置下发集群  </p>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入下发节点ip地址</span>
+                    <input type="text" id="fdid_1" name="fd_hostip" class="form-control" style="color:blue"  placeholder="空格作为分割">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机用户名</span>
+                    <input type="text" id="fdid_2"  name="fd_hostusername" class="form-control" style="color:blue" placeholder="请选择root用户">
+                </div>
+                <br/>
+
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机密码</span>
+                    <input type="text" id="fdid_3" name="fd_hostpassword" class="form-control" style="color:blue" placeholder="默认不能为空">
+                </div>
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px">
+                    <span class="input-group-addon" style="width:200px;text-align:left">输入主机端口</span>
+                    <input type="text" id="fdid_4" name="fd_hostport" class="form-control" style="color:blue" placeholder="0~65535">
+                </div>                
+                <br/>
+                
+                <div class="input-group" style="left:150px;width:600px;text-align:right">
+                    <button type="button" class="btn btn-danger" id="fd_sshtest" onclick="ssh_check('fd')">ssh连接测试</button>
+                </div>
+                <br/>
+                
+                <button type="button" class="btn btn-warning" id="fd_clear" onclick="FDcleardata()">清 空</button>
+                <input type="submit" class="btn btn-primary" id="fd_ensure" disabled="disabled"></input>
+            </form>
+        </div>
+        <!-- fastDFS configuration end -->
+
+                        </div><!-- /.row -->
+                    </div><!-- /.page-content -->
+</body>
+<script type="text/javascript">
+function close_modal(){
+$('#myModal').modal('hide');
+};
+</script>
+
+
+<script>
+$("input:text").bind("input propertychange",function(){
+    $("#wl_ensure").attr("disabled", false);
+    $("#op_ensure").attr("disabled", false);
+    $("#or_ensure").attr("disabled", false);
+    $("#my_ensure").attr("disabled", false);
+    $("#fd_ensure").attr("disabled", false);
+ });
+
+function WLgradeChange(){
+    $("#wl_ensure").attr("disabled", false);
+    document.getElementById('wl_ensure').className="btn btn-primary";
+}
+function OPgradeChange(){
+    $("#op_ensure").attr("disabled", false);
+    document.getElementById('op_ensure').className="btn btn-primary";
+}
+function ORgradeChange(){
+    $("#or_ensure").attr("disabled", false);
+    document.getElementById('or_ensure').className="btn btn-primary";
+}
+function MYgradeChange(){
+    $("#my_ensure").attr("disabled", false);
+    document.getElementById('my_ensure').className="btn btn-primary";
+}
+
+/*clear all data*/
+function WLcleardata(){
+    for(var i=1; i<=13; i++){
+        var s = i.toString();
+        s = "wlid_" + s;
+        document.getElementById(s).value="";
+    }
+    var ipSelectDom = document.getElementById('wlid_11');
+    ipSelectDom.innerHTML = '';
+    $("#wl_ensure").attr("disabled", true);
+}
+function OPcleardata(){
+    for(var i=1; i<=13; i++){
+        var s = i.toString();
+        s = "opid_" + s;
+        document.getElementById(s).value="";
+    }
+    $("#op_ensure").attr("disabled", true);
+}
+function ORcleardata(){
+    for(var i=1; i<=7; i++){
+        var s = i.toString();
+        s = "orid_" + s;
+        document.getElementById(s).value="";
+        }
+    $("#or_ensure").attr("disabled", true);
+}
+function MYcleardata(){
+    for(var i=1; i<=4; i++){
+        var s = i.toString();
+        s = "myid_" + s;
+        document.getElementById(s).value="";
+        }
+    $("#my_ensure").attr("disabled", true);
+}
+function FDcleardata(){
+    for(var i=1; i<=6; i++){
+        var s = i.toString();
+        s = "fdid_" + s;
+        document.getElementById(s).value="";
+        }
+    $("#fd_ensure").attr("disabled", true);
+}
+
+/*load old data */
+function MyAutoRun(){
+    /* weblogic default config */
+    var txt1=document.getElementById('wlid_1');
+    txt1.value="{{wl_nodenum}}";
+    var txt1=document.getElementById('wlid_2');
+    //document.getElementById('wlid_2').setAttribute('seleceted','seleceted');
+    txt1.value="{{wl_usertype}}";
+    var txt1=document.getElementById('wlid_3');
+    txt1.value="{{wl_domainname}}";
+    var txt1=document.getElementById('wlid_4');
+    txt1.value="{{wl_listenport}}";
+    var txt1=document.getElementById('wlid_5');
+    txt1.value="{{wl_clustername}}";
+    var txt1=document.getElementById('wlid_6');
+    txt1.value="{{wl_username}}";
+    var txt1=document.getElementById('wlid_7');
+    txt1.value="{{wl_password}}";
+    var txt1=document.getElementById('wlid_8');
+    txt1.value="{{wl_httpport}}";
+    var txt1=document.getElementById('wlid_9');
+    txt1.value="{{wl_memsize}}";
+    var txt1=document.getElementById('wlid_10');
+    txt1.value="{{wl_namelist}}";
+    var txt1=document.getElementById('wlid_11');
+    txt1.value="{{wl_iplist}}";
+    fillIpSelect()
+    var txt1=document.getElementById('wlid_12');
+    txt1.value="{{wl_adminserver}}";
+    var txt1=document.getElementById('wlid_13');
+    txt1.value="{{wl_hostusername}}";
+    var txt1=document.getElementById('wlid_14');
+    txt1.value="{{wl_hostpassword}}";
+    var txt1=document.getElementById('wlid_15');
+    txt1.value="{{wl_hostsshport}}";
+    
+    /* openfire default config */
+    var txt1=document.getElementById('opid_5');
+    txt1.value="{{op_dbtype}}";
+    var txt1=document.getElementById('opid_6');
+    txt1.value="{{op_dbip}}";
+    var txt1=document.getElementById('opid_7');
+    txt1.value="{{op_dbport}}";
+    var txt1=document.getElementById('opid_8');
+    txt1.value="{{op_instant}}";
+    var txt1=document.getElementById('opid_9');
+    txt1.value="{{op_dbusername}}";
+    var txt1=document.getElementById('opid_10');
+    txt1.value="{{op_dbpasswd}}";
+    var txt1=document.getElementById('opid_11');
+    txt1.value="{{op_memsize}}";
+    var txt1=document.getElementById('opid_12');
+    txt1.value="{{op_webport}}";
+    var txt1=document.getElementById('opid_13');
+    txt1.value="{{op_clusterip}}";
+    var txt1=document.getElementById('opid_1');
+    txt1.value="{{op_hostip}}";
+    var txt1=document.getElementById('opid_2');
+    txt1.value="{{op_hostusername}}";
+    var txt1=document.getElementById('opid_3');
+    txt1.value="{{op_hostpassword}}";
+    var txt1=document.getElementById('opid_4');
+    txt1.value="{{op_hostport}}";
+    
+    /* oracle default config */
+    var txt1=document.getElementById('orid_1');
+    txt1.value="{{or_port}}";
+    var txt1=document.getElementById('orid_2');
+    txt1.value="{{or_instancename}}";
+    var txt1=document.getElementById('orid_3');
+    txt1.value="{{or_charset}}";
+    var txt1=document.getElementById('orid_4');
+    txt1.value="{{or_logsize}}";
+    var txt1=document.getElementById('orid_5');
+    txt1.value="{{or_memsize}}";
+    var txt1=document.getElementById('orid_6');
+    txt1.value="{{or_process}}";
+    var txt1=document.getElementById('orid_7');
+    txt1.value="{{or_hostip}}";
+    var txt1=document.getElementById('orid_8');
+    txt1.value="{{or_hostusername}}";
+    var txt1=document.getElementById('orid_9');
+    txt1.value="{{or_hostpassword}}";
+    var txt1=document.getElementById('orid_10');
+    txt1.value="{{or_hostsshport}}";
+    
+    /* mysql default config */
+    var txt1=document.getElementById('myid_1');
+    txt1.value="{{my_hostip}}";
+    var txt1=document.getElementById('myid_2');
+    txt1.value="{{my_hostusername}}";
+    var txt1=document.getElementById('myid_3');
+    txt1.value="{{my_hostpassword}}";
+    var txt1=document.getElementById('myid_4');
+    txt1.value="{{my_hostsshport}}";
+
+    /* fastdfs default config */
+    var txt1=document.getElementById('fdid_1');
+    txt1.value="{{fd_hostip}}";
+    var txt1=document.getElementById('fdid_2');
+    txt1.value="{{fd_hostusername}}";
+    var txt1=document.getElementById('fdid_3');
+    txt1.value="{{fd_hostpassword}}";
+    var txt1=document.getElementById('fdid_4');
+    txt1.value="{{fd_hostport}}";
+    var txt1=document.getElementById('fdid_5');
+    txt1.value="{{fd_trackerport}}";
+    var txt1=document.getElementById('fdid_6');
+    txt1.value="{{fd_storageport}}";
+}
+window.onload=MyAutoRun();
+
+
+/*creat AdminServer select list*/
+function fillIpSelect(){
+    var iplist1 = document.getElementById('wlid_10').value;
+    iplist1 = iplist1.split(' ');
+    
+    var iplist2 = document.getElementById('wlid_11').value;
+    iplist2 = iplist2.split(' ');
+
+    if (iplist1.length == iplist2.length) {
+        var ipSelectDom = document.getElementById('wlid_12');
+        if( iplist1.length ){
+            if(ipSelectDom.hasChildNodes()){
+                ipSelectDom.innerHTML = '';
+            }
+            for(var i=0;i<iplist1.length;i++){
+                var ip = iplist1[i]+' '+iplist2[i];
+                var optionDom = document.createElement('option');
+                optionDom.text = ip;
+                //var s = i.toString();
+                //optionDom.id = 'wl_ms' + i.toString();
+                ipSelectDom.appendChild(optionDom);
+            }
+        }else{
+            ipSelectDom.innerHTML = '';
+        }
+    }
+    else{
+        var ipSelectDom = document.getElementById('wlid_12');
+        ipSelectDom.innerHTML = '';
+    }
+}
+
+
+function submitweblogic() {
+    $("#wl_ensure").attr("disabled", true);
+    
+    var wl_nodenum=document.getElementById('wlid_1').value;
+    var wl_usertype=document.getElementById('wlid_2').value;
+    var wl_domainname=document.getElementById('wlid_3').value;
+    var wl_listenport=document.getElementById('wlid_4').value;
+    var wl_clustername=document.getElementById('wlid_5').value;
+    var wl_username=document.getElementById('wlid_6').value;
+    var wl_password=document.getElementById('wlid_7').value;
+    var wl_httpport=document.getElementById('wlid_8').value;
+    var wl_memsize=document.getElementById('wlid_9').value;
+    var wl_namelist=document.getElementById('wlid_10').value;
+    var wl_iplist=document.getElementById('wlid_11').value;
+    var wl_adminserver=document.getElementById('wlid_12').value;
+    var wl_hostusername=document.getElementById('wlid_13').value;
+    var wl_hostpassword=document.getElementById('wlid_14').value;
+    var wl_hostsshport=document.getElementById('wlid_15').value;
+
+    var str = "/wl_setconf/?wl_nodenum="+wl_nodenum+'&wl_usertype='+wl_usertype+'&wl_domainname='+wl_domainname+'&wl_listenport='+wl_listenport+'&wl_clustername='+wl_clustername+'&wl_username='+wl_username+'&wl_password='+wl_password+'&wl_httpport='+wl_httpport+'&wl_memsize='+wl_memsize+'&wl_namelist='+wl_namelist+'&wl_iplist='+wl_iplist+'&wl_adminserver='+wl_adminserver+'&wl_hostusername='+wl_hostusername+'&wl_hostpassword='+wl_hostpassword+'&wl_hostsshport='+wl_hostsshport;
+
+    var req = new XMLHttpRequest();
+    req.open("GET", str);
+    req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+    req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200) {
+            res = eval('[' + req.responseText + ']')[0];
+            alert(res);
+            //location.reload();
+        }
+    }
+    req.send(null);
+}
+
+function submitopenfire() {
+    $("#op_ensure").attr("disabled", true);
+    
+    var op_dbtype=document.getElementById('opid_5').value;
+    var op_dbip=document.getElementById('opid_6').value;
+    var op_dbport=document.getElementById('opid_7').value;
+    var op_instant=document.getElementById('opid_8').value;
+    var op_dbusername=document.getElementById('opid_9').value;
+    var op_dbpasswd=document.getElementById('opid_10').value;
+    var op_memsize=document.getElementById('opid_11').value;
+    var op_webport=document.getElementById('opid_12').value;
+    var op_clusterip=document.getElementById('opid_13').value;
+    var op_hostip=document.getElementById('opid_1').value;
+    var op_hostusername=document.getElementById('opid_2').value;
+    var op_hostpassword=document.getElementById('opid_3').value;
+    var op_hostport=document.getElementById('opid_4').value;
+
+    var str = "/op_setconf/?op_hostip="+op_hostip+'&op_hostusername='+op_hostusername+'&op_hostpassword='+op_hostpassword+'&op_hostport='+op_hostport+'&op_dbtype='+op_dbtype+'&op_dbip='+op_dbip+'&op_dbport='+op_dbport+'&op_instant='+op_instant+'&op_dbusername='+op_dbusername+'&op_dbpasswd='+op_dbpasswd+'&op_clusterip='+op_clusterip+'&op_webport='+op_webport+'&op_memsize='+op_memsize;
+
+    var req = new XMLHttpRequest();
+    req.open("GET", str);
+    req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+    req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200) {
+            res = eval('[' + req.responseText + ']')[0];
+            alert(res);
+            //location.reload();
+        }
+    }
+    req.send(null);
+}
+
+function submitoracle() {
+    $("#or_ensure").attr("disabled", true);
+    
+    var or_port=document.getElementById('orid_1').value;
+    var or_instancename=document.getElementById('orid_2').value;
+    var or_charset=document.getElementById('orid_3').value;
+    var or_logsize=document.getElementById('orid_4').value;
+    var or_memsize=document.getElementById('orid_5').value;
+    var or_process=document.getElementById('orid_6').value;
+    var or_hostip=document.getElementById('orid_7').value;
+    var or_hostusername=document.getElementById('orid_8').value;
+    var or_hostpassword=document.getElementById('orid_9').value;
+    var or_hostsshport=document.getElementById('orid_10').value;
+
+    var str = "/or_setconf/?or_port="+or_port+'&or_instancename='+or_instancename+'&or_charset='+or_charset+'&or_logsize='+or_logsize+'&or_memsize='+or_memsize+'&or_process='+or_process+'&or_hostusername='+or_hostusername+'&or_hostpassword='+or_hostpassword+'&or_hostip='+or_hostip+'&or_hostsshport='+or_hostsshport;
+
+    var req = new XMLHttpRequest();
+    req.open("GET", str);
+    req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+    req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200) {
+            res = eval('[' + req.responseText + ']')[0];
+            alert(res);
+            //location.reload();
+        }
+    }
+    req.send(null);
+}
+
+function submitmysql() {
+    $("#my_ensure").attr("disabled", true);
+    
+    var my_hostip=document.getElementById('myid_1').value;
+    var my_hostusername=document.getElementById('myid_2').value;
+    var my_hostpassword=document.getElementById('myid_3').value;
+    var my_hostsshport=document.getElementById('myid_4').value;
+
+    var str = "/my_setconf/?my_hostusername="+my_hostusername+'&my_hostpassword='+my_hostpassword+'&my_hostip='+my_hostip+'&my_hostsshport='+my_hostsshport;
+
+    var req = new XMLHttpRequest();
+    req.open("GET", str);
+    req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+    req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200) {
+            res = eval('[' + req.responseText + ']')[0];
+            alert(res);
+            //location.reload();
+        }
+    }
+    req.send(null);
+}
+
+function submitfastdfs() {
+    $("#fd_ensure").attr("disabled", true);
+    
+    var fd_hostip=document.getElementById('fdid_1').value;
+    var fd_hostusername=document.getElementById('fdid_2').value;
+    var fd_hostpassword=document.getElementById('fdid_3').value;
+    var fd_hostport=document.getElementById('fdid_4').value;
+    var fd_trackerport=document.getElementById('fdid_5').value;
+    var fd_storageport=document.getElementById('fdid_6').value;
+
+    var str = "/fd_setconf/?fd_hostusername="+fd_hostusername+'&fd_hostpassword='+fd_hostpassword+'&fd_hostip='+fd_hostip+'&fd_hostport='+fd_hostport+'&fd_trackerport='+fd_trackerport+'&fd_storageport='+fd_storageport;
+
+    var req = new XMLHttpRequest();
+    req.open("GET", str);
+    req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+    req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200) {
+            res = eval('[' + req.responseText + ']')[0];
+            alert(res);
+            //location.reload();
+        }
+    }
+    req.send(null);
+}
+
+function ssh_check(choice){
+    if(choice == "wl") {
+        var hostip=document.getElementById('wlid_11').value;
+        var hostusername=document.getElementById('wlid_13').value;
+        var hostpassword=document.getElementById('wlid_14').value;
+        var hostport=document.getElementById('wlid_15').value;
+        $("#wl_sshtest").attr("disabled", true);
+    }
+    if(choice == "op") {
+        var hostip=document.getElementById('opid_1').value;
+        var hostusername=document.getElementById('opid_2').value;
+        var hostpassword=document.getElementById('opid_3').value;
+        var hostport=document.getElementById('opid_4').value;
+        $("#op_sshtest").attr("disabled", true);
+    }
+    if(choice == "or") {
+        var hostip=document.getElementById('orid_7').value;
+        var hostusername=document.getElementById('orid_8').value;
+        var hostpassword=document.getElementById('orid_9').value;
+        var hostport=document.getElementById('orid_10').value;
+        $("#or_sshtest").attr("disabled", true);
+}
+    if(choice == "my") {
+        var hostip=document.getElementById('myid_1').value;
+        var hostusername=document.getElementById('myid_2').value;
+        var hostpassword=document.getElementById('myid_3').value;
+        var hostport=document.getElementById('myid_4').value;
+        $("#my_sshtest").attr("disabled", true);
+}
+    if(choice == "fd") {
+        var hostip=document.getElementById('fdid_1').value;
+        var hostusername=document.getElementById('fdid_2').value;
+        var hostpassword=document.getElementById('fdid_3').value;
+        var hostport=document.getElementById('fdid_4').value;
+        $("#fd_sshtest").attr("disabled", true);
+}
+
+    var str = "/ssh_check/?hostip="+hostip+'&hostusername='+hostusername+'&hostpassword='+hostpassword+'&hostport='+hostport;
+
+    var req = new XMLHttpRequest();
+    req.open("GET", str);
+    req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+    req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200) {
+            res = eval('[' + req.responseText + ']')[0];
+            alert(res);
+            //location.reload();
+        }
+        if(choice == "wl") {
+            $("#wl_sshtest").attr("disabled", false);
+        }
+        if(choice == "op") {
+            $("#op_sshtest").attr("disabled", false);
+        }
+        if(choice == "or") {
+            $("#or_sshtest").attr("disabled", false);
+        }
+        if(choice == "my") {
+            $("#my_sshtest").attr("disabled", false);
+        }
+        if(choice == "fd") {
+            $("#fd_sshtest").attr("disabled", false);
+        }
+    }
+    req.send(null);
+    
+}
+
+</script>
+
+
+</html>
+

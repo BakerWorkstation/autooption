@@ -1,0 +1,705 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+    <head>
+
+        <meta charset="utf-8" />
+
+        <title>监控系统 - 自动化运维管理平台</title>
+
+
+
+        <link rel="stylesheet" href='/static/css/buttons.css'>
+
+        <script src='/static/js/echarts-2.2.7/build/dist/echarts-all.js'></script>
+
+    </head>
+
+
+
+
+<body>
+
+
+<div >
+<select id="timeValue" style="width:150px;height:30px;font-size:16px"  onchange="ShowData()">
+<option value="1" selected="selected">CPU使用率</option>
+<option value="2">CPU iowait time</option>
+<option value="3">内存使用率</option>
+<option value="4" >网卡入口流量</option>
+<option value="5" >网卡出口流量</option>
+<option value="6" >磁盘使用率</option>
+</select>
+</div>
+
+</br>
+<div style="text-align:center;width:1000px">
+<input style="height:25px;width:200px;font-size:20px;border:1px solid blue;color:red" id="selectdate" type="date" onchange="ShowData('notfirst')"/>
+<a href="/monitor/?hostip={{ipaddr}}&groupname={{groupname}}"  style="float:right" class="button button-glow button-border button-rounded button-primary">返回</a>
+
+</div>
+<br>
+<div id="datapic" style="height:350px;width:1100px;"></div>
+<!--
+<div id="mem" style="height:350px;width: 1100px"></div>
+<br>
+<div id="net_in" style="height:350px;width: 1100px"></div>
+<br>
+<div id="net_out" style="height:350px;width: 1100px"></div>
+<br>
+<div id="disk" style="height:350px;width: 1100px"></div>
+-->
+</body>
+<!-- ECharts单文件引入 -->
+
+<!--<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>-->
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts图表
+function  cpuinfo(cpu_x, cpu_y, cpu_c, templist)
+{
+    var myChart = echarts.init(document.getElementById("datapic"));
+    var option = {
+        title : {
+            text: 'CPU 使用率  (' + cpu_c + 'G)'
+            //subtext: '测试'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:templist
+        },
+        //右上角工具条
+        toolbox: {
+            show : false,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+
+            {splitLine:{
+　　　　show:false
+　　},
+                type : 'category',
+                boundaryGap : false,
+
+                data : cpu_x,
+                axisLabel:{
+                         interval:5,//横轴信息全部显示
+                         rotate:30,//-30度角倾斜显示
+                    }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} %'
+                }
+            }
+        ],
+        series : [
+         ]
+    };
+
+    // 为echarts对象加载数据
+    //console.log(cpu_y);
+    for(var i=0; i<templist.length;i++)
+    {
+    option['series'].push(
+            {
+                name:templist[i],
+                type:'line',
+                symbol:'none',
+                data: cpu_y[i],
+
+                markPoint : {
+                    data : [
+                      //  {type : 'max', name: '最大值'},
+                       // {type : 'min', name: '最小值'}
+                    ]
+
+                },
+
+                markLine : {
+                    data : [
+                       // {type : 'average', name: '平均值'}
+                    ]
+                }
+            }
+    );
+    };
+    myChart.setOption(option);
+}
+
+function  cpuWaitinfo(cpuWait_x, cpuWait_y, templist)
+{
+    var myChart = echarts.init(document.getElementById("datapic"));
+    var option = {
+        title : {
+            text: 'CPU iowait time'
+            //subtext: '测试'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:templist
+        },
+        //右上角工具条
+        toolbox: {
+            show : false,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+
+            {splitLine:{
+　　　　show:false
+　　},
+                type : 'category',
+                boundaryGap : false,
+
+                data : cpuWait_x,
+                axisLabel:{
+                         interval:5,//横轴信息全部显示
+                         rotate:30,//-30度角倾斜显示
+                    }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} %'
+                }
+            }
+        ],
+        series : [
+         ]
+    };
+
+    // 为echarts对象加载数据
+    //console.log(cpu_y);
+    for(var i=0; i<templist.length;i++)
+    {
+    option['series'].push(
+            {
+                name:templist[i],
+                type:'line',
+                symbol:'none',
+                data: cpuWait_y[i],
+
+                markPoint : {
+                    data : [
+                      //  {type : 'max', name: '最大值'},
+                       // {type : 'min', name: '最小值'}
+                    ]
+
+                },
+
+                markLine : {
+                    data : [
+                       // {type : 'average', name: '平均值'}
+                    ]
+                }
+            }
+    );
+    };
+    myChart.setOption(option);
+}
+
+function  meminfo(mem_x, mem_y, mem_t, templist)
+{
+    var myChart = echarts.init(document.getElementById("datapic"));
+    var option = {
+        title : {
+            text: '内存 使用率  (' + mem_t + 'G)'
+            //subtext: '测试'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:templist
+        },
+        //右上角工具条
+        toolbox: {
+            show : false,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+
+            {splitLine:{
+　　　　show:false
+　　},
+                type : 'category',
+                boundaryGap : false,
+
+                data : mem_x,
+                axisLabel:{
+                         interval:5,//横轴信息全部显示
+                         rotate:30,//-30度角倾斜显示
+                    }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} %'
+                }
+            }
+        ],
+        series : [
+                    ]
+
+    };
+
+    //console.log(mem_y);
+    for(var i=0; i<templist.length;i++)
+    {
+    option['series'].push(
+            {
+                name:templist[i],
+                type:'line',
+                symbol:'none',
+                data: mem_y[i],
+
+                markPoint : {
+                    data : [
+                      //  {type : 'max', name: '最大值'},
+                       // {type : 'min', name: '最小值'}
+                    ]
+
+                },
+
+                markLine : {
+                    data : [
+                       // {type : 'average', name: '平均值'}
+                    ]
+                }
+            }
+    );
+    };
+    // 为echarts对象加载数据
+    myChart.setOption(option);
+}
+
+
+function netIn_info(net_x, netIn_y, templist)
+{
+    var myChart = echarts.init(document.getElementById("datapic"));
+    var option = {
+        title : {
+            text: '网卡 入口流量'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:templist
+        },
+        //右上角工具条
+        toolbox: {
+            show : false,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+
+            {splitLine:{
+　　　　show:false
+　　},
+                type : 'category',
+                boundaryGap : false,
+
+                data : net_x,
+                axisLabel:{
+                         interval:5,//横轴信息全部显示
+                         rotate:30,//-30度角倾斜显示
+                    }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} Mbps'
+                }
+            }
+        ],
+        series : [
+        ]
+    };
+
+    // console.log(netIn_y);
+    for(var i=0; i<templist.length;i++)
+    {
+    option['series'].push(
+            {
+                name:templist[i],
+                type:'line',
+                symbol:'none',
+                data: netIn_y[i],
+
+                markPoint : {
+                    data : [
+                      //  {type : 'max', name: '最大值'},
+                       // {type : 'min', name: '最小值'}
+                    ]
+
+                },
+
+                markLine : {
+                    data : [
+                       // {type : 'average', name: '平均值'}
+                    ]
+                }
+            }
+    );
+    };
+    // 为echarts对象加载数据
+    myChart.setOption(option);
+}
+
+function netOut_info(net_x, netOut_y, templist)
+{
+    var myChart = echarts.init(document.getElementById("datapic"));
+    var option = {
+        title : {
+            text: '网卡 出口流量'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:templist
+        },
+        //右上角工具条
+        toolbox: {
+            show : false,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+
+            {splitLine:{
+　　　　show:false
+　　},
+                type : 'category',
+                boundaryGap : false,
+
+                data : net_x,
+                axisLabel:{
+                         interval:5,//横轴信息全部显示
+                         rotate:30,//-30度角倾斜显示
+                    }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} Mbps'
+                }
+            }
+        ],
+        series : [
+        ]
+    };
+
+    //console.log(netOut_y);
+    for(var i=0; i<templist.length;i++)
+    {
+    option['series'].push(
+            {
+                name:templist[i],
+                type:'line',
+                symbol:'none',
+                data: netOut_y[i],
+
+                markPoint : {
+                    data : [
+                      //  {type : 'max', name: '最大值'},
+                       // {type : 'min', name: '最小值'}
+                    ]
+
+                },
+
+                markLine : {
+                    data : [
+                       // {type : 'average', name: '平均值'}
+                    ]
+                }
+            }
+    );
+    };
+    // 为echarts对象加载数据
+    myChart.setOption(option);
+}
+
+function  diskinfo(disk_x, disk_y, disk_t, templist)
+{
+    var myChart = echarts.init(document.getElementById("datapic"));
+    var option = {
+        title : {
+            text: '硬盘 使用率  (' + disk_t + 'G)'
+            //subtext: '测试'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:templist
+        },
+        //右上角工具条
+        toolbox: {
+            show : false,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+
+            {splitLine:{
+　　　　show:false
+　　},
+                type : 'category',
+                boundaryGap : false,
+
+                data : disk_x,
+                axisLabel:{
+                         interval:5,//横轴信息全部显示
+                         rotate:30,//-30度角倾斜显示
+                    }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} %'
+                }
+            }
+        ],
+        series : [
+         ]
+    };
+
+    // 为echarts对象加载数据
+    //console.log(disk_y);
+    for(var i=0; i<templist.length;i++)
+    {
+    option['series'].push(
+            {
+                name:templist[i],
+                type:'line',
+                symbol:'none',
+                data: disk_y[i],
+
+                markPoint : {
+                    data : [
+                      //  {type : 'max', name: '最大值'},
+                       // {type : 'min', name: '最小值'}
+                    ]
+
+                },
+
+                markLine : {
+                    data : [
+                       // {type : 'average', name: '平均值'}
+                    ]
+                }
+            }
+    );
+    };
+    myChart.setOption(option);
+}
+
+function stamptodate(timestamp) { 
+    var now = new Date(parseInt(timestamp)*1000);
+    var year=now.getFullYear(); 
+    var month=now.getMonth()+1; 
+    if(String(month).length == 1){
+         month = '0' + month;
+    }
+    var datea=now.getDate(); 
+    if(String(datea).length == 1){
+        datea = '0' + datea;
+    }
+    //var hour=now.getHours(); 
+    //var minute=now.getMinutes(); 
+    //var second=now.getSeconds(); 
+    return year+"-"+month+"-"+datea;
+} 
+
+function datetostamp(today){
+    today = today.replace(/-/g,'/');
+    var stamp = new Date(today);
+    return stamp.getTime()/1000;
+}
+
+function showdate(flag){
+    var time = new Date();
+    // 程序计时的月从0开始取值后+1
+    var day = time.getDate();
+    var month = time.getMonth() + 1;
+    var year = time.getFullYear();
+    var today = year + "-" + month + "-" + day
+    var selectdate = document.getElementById('selectdate');
+    var todaystamp = datetostamp(today);
+    yesterdaystamp = todaystamp - 3600 * 24
+    yesterday = stamptodate(yesterdaystamp);
+    beforestamp = todaystamp - 3600 * 24 * 7
+    before = stamptodate(beforestamp);
+    selectdate.min = before;
+    selectdate.max = yesterday;
+    if(flag != 'notfirst'){
+    selectdate.value = selectdate.max;
+    }
+    var message = {'select': selectdate.value, 'today': todaystamp};
+    return message;
+}
+
+function makeX(){
+    var timeFlag = [];
+    for(var hou=0;hou<24;hou++)
+    {
+        for(var min=0;min<60;min+=15)
+        {
+             if(String(hou).length<2)
+             {
+                  hou = '0' + hou;
+             }
+             if(String(min).length<2)
+             {
+                  min = '0' + min;
+             }
+             showTime = hou + ':' + min;
+             timeFlag.push(showTime);
+             min = parseInt(min);
+             hou = parseInt(hou);
+        }
+    }
+    timeFlag.push('24:00');
+    return timeFlag;         
+}
+
+function GetData(ipaddr, templist){
+  var X = makeX();
+  var datatype = document.getElementById('timeValue').value;
+
+  var res;
+  var dayCount = templist.length;
+  var str1 = "/monitor_historydata/?ipaddr=" + ipaddr + '&dayCount=' + dayCount + '&datatype=' + datatype;
+  var req = new XMLHttpRequest();
+  req.open("GET", str1);
+  req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+  req.onreadystatechange = function() {
+    if(req.readyState == 4 && req.status == 200) {
+        res = eval('[' + req.responseText + ']')[0];
+       // console.log(datatype);
+        if(datatype==1){
+            var cpuY = res['cpuY'];
+            var cpuX = res['cpuX'];
+            var cpuCount = res['cpuCount'];
+            cpuinfo(cpuX, cpuY, cpuCount, templist);
+        }
+        else if(datatype==2){
+            var cpuWaitY = res['cpuWaitY'];
+            var cpuWaitX = res['cpuWaitX'];
+            cpuWaitinfo(cpuWaitX, cpuWaitY, templist);
+        }
+        else if(datatype==3){
+            var memY = res['memY'];
+            var memX = res['memX'];
+            var memT = res['memT'];
+            meminfo(memX, memY, memT, templist);
+        }
+        else if(datatype==4){
+            netInY = res['netInY'];
+            netInX = res['netInX'];
+            netIn_info(netInX, netInY, templist);
+        }
+        else if(datatype==5){
+            netOutY = res['netOutY'];
+            netOutX = res['netOutX'];
+            netOut_info(netOutX, netOutY, templist);
+        }
+        else{
+            diskY = res['diskY'];
+            diskX = res['diskX'];
+            diskT = res['diskT'];
+           diskinfo(diskX, diskY, diskT, templist);
+        }
+    }
+  }
+  req.send(null);
+}
+
+function ShowData(flag) {
+    hostip = "{{ipaddr}}";
+    selectdata = showdate(flag);
+    select = selectdata['select'];
+    today = selectdata['today'];
+    select = datetostamp(select);
+    countDay = (today-select)/3600/24;
+    var templist = [];
+    for(i=today-(24*3600);i>=select;i-=(3600*24))
+    {
+        var info = stamptodate(i).split('-')[2] + "号数据";
+        templist.push(info);
+    }
+    dayCount = templist.length;
+    if(dayCount>0){
+        GetData(hostip,templist);
+    }
+}
+window.onload=ShowData('a');
+</script>
+
+
+</html>
+
+
+
